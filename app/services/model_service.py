@@ -4,6 +4,7 @@ from pathlib import Path
 import cv2
 import torch
 
+from app.config import settings
 from app.services.esrgan.realesrganer import RealESRGANer
 from app.services.esrgan.rrdbnet_arch import RRDBNet
 from app.services.model_downloader import ensure_model_weights
@@ -33,7 +34,7 @@ def get_model(weights_dir: str) -> RealESRGANer:
         scale=4,
         model_path=str(model_path),
         model=model,
-        tile=256,
+        tile=settings.model_tile_size,
         tile_pad=10,
         pre_pad=0,
         half=False,

@@ -127,7 +127,8 @@ CSS = """
 
 .arch {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); background: var(--surface-2);
-    padding: 14px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; line-height: 1.6; white-space: pre;
+    padding: 14px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; line-height: 1.6;
+    white-space: pre; text-align: center;
 }
 
 .resource-link {
@@ -152,7 +153,6 @@ CSS = """
 }
 .regards .links a:hover { border-color: var(--accent); }
 
-/* Upload area */
 [data-testid="stFileUploader"] section {
     border: 2px dashed var(--border) !important; border-radius: 10px !important;
     background: var(--surface) !important; padding: 30px 20px !important; text-align: center;
@@ -164,7 +164,6 @@ CSS = """
 }
 [data-testid="stFileUploader"] small { color: var(--text-dim) !important; }
 
-/* Buttons */
 .stButton > button, .stDownloadButton > button {
     background: var(--accent) !important; color: #fff !important;
     border: none !important; border-radius: 8px !important;
@@ -172,25 +171,21 @@ CSS = """
 }
 .stButton > button:hover, .stDownloadButton > button:hover { background: var(--accent-dim) !important; }
 
-/* Metrics */
 [data-testid="stMetric"] {
     background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px;
 }
 [data-testid="stMetricLabel"] { color: var(--text-dim) !important; font-size: 12px !important; }
 [data-testid="stMetricValue"] { color: var(--text) !important; font-family: 'JetBrains Mono', monospace; }
 
-/* Status / success */
 [data-testid="stStatusWidget"] { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
 [data-testid="stAlert"] { border-radius: 8px; }
 .stSuccess, .stInfo { background: var(--surface) !important; border-color: var(--border) !important; }
 
-/* Headers & text */
 h1, h2, h3 { font-family: 'Inter', sans-serif; color: var(--text); }
 [data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li { color: var(--text-dim); }
 [data-testid="stMarkdownContainer"] strong { color: var(--text); }
 .stCaption, [data-testid="stCaptionContainer"] p { color: var(--text-dim) !important; }
 
-/* Radio */
 [data-testid="stRadio"] label { color: var(--text) !important; }
 [data-testid="stRadio"] div[role="radiogroup"] > label {
     background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
@@ -198,6 +193,22 @@ h1, h2, h3 { font-family: 'Inter', sans-serif; color: var(--text); }
 }
 [data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) {
     border-color: var(--accent); background: rgba(74,158,255,0.08);
+}
+
+@media (max-width: 720px) {
+    .block-container { padding-top: 1rem; padding-bottom: 2rem; }
+    .hero h1 { font-size: 26px; letter-spacing: 7px; }
+    .hero .tagline { font-size: 13px; }
+    .hero .sub { font-size: 11px; }
+    .hero-badges { flex-wrap: wrap; }
+    .grid, .grid3 { grid-template-columns: 1fr; }
+    .profile-item { flex-wrap: wrap; }
+    .profile-badge { flex-shrink: 0; }
+    .card { padding: 16px 14px; }
+    .resource-link, .grid .item, .grid3 .item { padding: 12px; }
+    .arch { font-size: 10px; padding: 10px; }
+    [data-testid="stMetric"] { padding: 8px 12px; }
+    .stButton > button, .stDownloadButton > button { padding: 10px 16px !important; }
 }
 </style>
 """
@@ -310,6 +321,35 @@ def _render_hero():
 
 def _render_card(html: str):
     st.markdown(f'<div class="card">{html}</div>', unsafe_allow_html=True)
+
+
+def _render_about():
+    _render_card(
+        """
+        <h2>About Optic Pixel</h2>
+        <p>Optic Pixel is a lightweight AI image enhancement platform. It analyzes every upload with
+        OpenCV and enhances it with Real-ESRGAN super-resolution — all on CPU, no GPU required.
+        Images stay temporary: they are processed in memory, never stored or shared.</p>
+        <div class="grid">
+            <div class="item">
+                <h4>Purpose</h4>
+                <p>Sharpen, denoise, and upscale photos up to 2x using state-of-the-art AI reconstruction.</p>
+            </div>
+            <div class="item">
+                <h4>Engine</h4>
+                <p>Real-ESRGAN (PyTorch CPU) with tiled inference, wrapped in a friendly Streamlit interface.</p>
+            </div>
+            <div class="item">
+                <h4>Who it's for</h4>
+                <p>Photographers, designers, and anyone restoring old or low-resolution images.</p>
+            </div>
+            <div class="item">
+                <h4>Status</h4>
+                <p>Version 1.0.0 — hosted on Streamlit Community Cloud, open source, free to use.</p>
+            </div>
+        </div>
+        """
+    )
 
 
 def _render_how_it_works():
@@ -496,7 +536,6 @@ def _render_regards():
         """
         <div class="card regards">
             <h2>Regards</h2>
-            <p>Thank you for using Optic Pixel. If you found it useful, consider connecting with me.</p>
             <p class="signoff">Aveek Patel</p>
             <p class="role">AWS Certified Solutions Architect &amp; Developer | Cloud &amp; Systems Engineer</p>
             <div class="certs">
@@ -577,6 +616,7 @@ else:
             )
 
 st.divider()
+_render_about()
 _render_how_it_works()
 _render_profiles()
 _render_performance()
