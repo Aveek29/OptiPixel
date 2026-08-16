@@ -6,6 +6,7 @@ Deploy target: Streamlit Community Cloud.
 
 import os
 import tempfile
+import threading
 import time
 from pathlib import Path
 
@@ -147,6 +148,30 @@ h1, h2, h3 { font-family: 'Inter', sans-serif; color: var(--text); }
 """
 
 
+FUN_MESSAGES = [
+    "AI is squinting at your pixels...",
+    "Teaching neural networks to see better...",
+    "Asking the computer to imagine higher resolution...",
+    "Reconstructing details that never existed...",
+    "Applying magic — the mathematical kind...",
+    "Telling apart noise from actual content...",
+    "Your image is getting a PhD in clarity...",
+    "Running Real-ESRGAN — sounds cooler than it feels on CPU...",
+    "Converting blurry dreams into sharp reality...",
+    "The model is thinking very hard right now...",
+    "Enhancing. This is what AI was made for.",
+    "Every pixel matters. Processing them all.",
+    "Super-resolution isn't super fast on CPU. Hold on.",
+    "Your image is in the gym. Getting gains.",
+    "Almost like Photoshop, but with math.",
+    "Real-ESRGAN says hello. It's working.",
+    "Convolutions happen. Details emerge.",
+    "This would be instant on a GPU. Blame the CPU.",
+    "Denoising. Sharpening. Upscaling. Repeat.",
+    "The AI promises it's worth the wait.",
+]
+
+
 @st.cache_resource(show_spinner=False)
 def _get_model():
     return model_service.get_model(settings.model_weights_dir)
@@ -183,17 +208,32 @@ def _run_enhancement(input_path: str, output_path: str, profile: EnhancementProf
         status.update(label="Model ready", state="complete")
 
     with st.status(f"Enhancing ({_profile_label(profile)})…", expanded=True) as status:
+        placeholder = st.empty()
+        result = {}
+
+        def _work():
+            result["w"], result["h"], result["scale"] = (
+                enhancement_service.run_enhancement(input_path, output_path, analysis)
+            )
+
         t0 = time.time()
-        w, h, scale = enhancement_service.run_enhancement(
-            input_path, output_path, analysis
-        )
+        worker = threading.Thread(target=_work, daemon=True)
+        worker.start()
+        idx = 0
+        while worker.is_alive():
+            placeholder.markdown(f"### {FUN_MESSAGES[idx]}")
+            time.sleep(2.5)
+            idx = (idx + 1) % len(FUN_MESSAGES)
+        worker.join()
+
         elapsed = time.time() - t0
+        placeholder.empty()
         status.update(
-            label=f"Done in {elapsed:.1f}s · {w}×{h} (scale {scale})",
+            label=f"Done in {elapsed:.1f}s · {result['w']}×{result['h']} (scale {result['scale']})",
             state="complete",
         )
 
-    return analysis, w, h, scale, elapsed
+    return analysis, result["w"], result["h"], result["scale"], elapsed
 
 
 def _render_hero():
