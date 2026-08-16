@@ -1,0 +1,32 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.env
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+*.log
+
+# Model weights (large files, downloaded at startup)
+models/*.pth
+models/*.pth.tar
+
+# Runtime artifacts
+local_outputs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+*.temp

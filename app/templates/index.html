@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optic Pixel — Dynamic AI Image Enhancement</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <span class="version-badge">v1.0.0</span>
+                <span class="status-badge">CPU Mode</span>
+            </div>
+            <h1 class="logo">OPTIC PIXEL</h1>
+            <p class="tagline">Dynamic AI Image Enhancement Platform</p>
+            <p class="subtagline">Upload. Analyze. Enhance. Download. Files removed on server restart.</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Upload Section -->
+        <section id="upload-section" class="card upload-card">
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="drop-text">Drag &amp; Drop Image Here</p>
+                <p class="drop-sub">or click to browse files</p>
+                <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.webp" hidden>
+            </div>
+            <div class="upload-info">
+                <span class="info-chip">JPG</span>
+                <span class="info-chip">PNG</span>
+                <span class="info-chip">WebP</span>
+                <span class="info-chip">Max <span id="max-upload">10</span>MB</span>
+                <span class="info-chip">Max 4MP</span>
+            </div>
+        </section>
+
+        <!-- Processing Section -->
+        <section id="processing-section" class="card hidden">
+            <div class="status-row">
+                <div class="status-indicator"></div>
+                <p id="status-text">Please wait — enhancing your image...</p>
+            </div>
+            <div class="progress-track">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div class="pipeline">
+                <span class="step" id="step-upload">Upload</span>
+                <span class="arrow">&rarr;</span>
+                <span class="step" id="step-analyze">Analyze</span>
+                <span class="arrow">&rarr;</span>
+                <span class="step" id="step-enhance">Enhance</span>
+                <span class="arrow">&rarr;</span>
+                <span class="step" id="step-ready">Ready</span>
+            </div>
+            <p class="processing-note">Processing on CPU. Typical time: 30s–3min depending on image size.</p>
+        </section>
+
+        <!-- Result Section -->
+        <section id="result-section" class="card hidden">
+            <h2 class="section-title">Enhancement Complete</h2>
+            <div class="comparison">
+                <div class="compare-panel">
+                    <h3>Original</h3>
+                    <img id="original-preview" src="" alt="Original">
+                    <div id="original-meta" class="meta"></div>
+                </div>
+                <div class="compare-divider">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                </div>
+                <div class="compare-panel">
+                    <h3>Enhanced</h3>
+                    <img id="enhanced-preview" src="" alt="Enhanced">
+                    <div id="enhanced-meta" class="meta"></div>
+                </div>
+            </div>
+            <div id="result-stats" class="result-stats"></div>
+            <div class="actions">
+                <a id="download-btn" class="btn btn-primary" href="#" download>Download Enhanced Image</a>
+                <button id="new-btn" class="btn btn-secondary" onclick="resetUI()">Enhance Another</button>
+            </div>
+        </section>
+
+        <!-- Error Section -->
+        <section id="error-section" class="card hidden">
+            <div class="error-box">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="15" y1="9" x2="9" y2="15"/>
+                    <line x1="9" y1="9" x2="15" y2="15"/>
+                </svg>
+                <p id="error-text">Something went wrong.</p>
+                <button class="btn btn-secondary" onclick="resetUI()">Try Again</button>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="card info-card">
+            <h2>How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-item">
+                    <div class="step-num">1</div>
+                    <h4>Upload</h4>
+                    <p>Drag and drop or select a JPG, PNG, or WebP image. Max 10MB / 4 megapixels.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">2</div>
+                    <h4>Analyze</h4>
+                    <p>OpenCV reads sharpness, brightness, contrast, and resolution. The system picks the best enhancement profile automatically.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">3</div>
+                    <h4>Enhance</h4>
+                    <p>Real-ESRGAN AI model runs super-resolution. Tiled inference on CPU. 2x upscale with detail reconstruction.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-num">4</div>
+                    <h4>Download</h4>
+                    <p>Get your enhanced image instantly. Files are temporary and cleared on server restart.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhancement Profiles -->
+        <section class="card info-card">
+            <h2>Enhancement Profiles</h2>
+            <div class="profiles-grid">
+                <div class="profile-item">
+                    <span class="profile-badge light">LIGHT</span>
+                    <p>CLAHE contrast correction + sharpening. Same resolution. Fast (~1-2s).</p>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-badge super">SUPER_RES</span>
+                    <p>Real-ESRGAN 2x upscaling with detail reconstruction. 30s-2min on CPU.</p>
+                </div>
+                <div class="profile-item">
+                    <span class="profile-badge restore">RESTORE</span>
+                    <p>Noise reduction + Real-ESRGAN super-resolution. For noisy/low-quality input.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Performance & Requirements -->
+        <section class="card info-card">
+            <h2>Performance &amp; Requirements</h2>
+            <div class="perf-grid">
+                <div class="perf-item">
+                    <h4>CPU Inference</h4>
+                    <p>Real-ESRGAN runs on CPU (no GPU required). Tiled processing keeps memory under 2GB.</p>
+                </div>
+                <div class="perf-item">
+                    <h4>Processing Time</h4>
+                    <ul>
+                        <li>LIGHT profile: ~1-2 seconds</li>
+                        <li>SUPER_RES 2x: 30s - 2min (CPU)</li>
+                        <li>RESTORE: 45s - 2min (CPU)</li>
+                    </ul>
+                </div>
+                <div class="perf-item">
+                    <h4>Limits</h4>
+                    <ul>
+                        <li>Max upload: 10MB</li>
+                        <li>Max resolution: 4 megapixels</li>
+                        <li>Timeout: 3 minutes</li>
+                        <li>Scale: 2x (locked for CPU)</li>
+                    </ul>
+                </div>
+                <div class="perf-item">
+                    <h4>Memory</h4>
+                    <ul>
+                        <li>Model: ~65MB weights</li>
+                        <li>Inference: ~1.5GB RAM</li>
+                        <li>Tiled: 256px tiles</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Privacy -->
+        <section class="card info-card">
+            <h2>Privacy &amp; Data</h2>
+            <div class="privacy-grid">
+                <div class="privacy-item">
+                    <h4>Temporary Storage</h4>
+                    <p>Uploaded and enhanced images are stored temporarily on the server's local disk. Files are not persisted — they are removed on server restart or redeploy.</p>
+                </div>
+                <div class="privacy-item">
+                    <h4>No Permanent Retention</h4>
+                    <p>No cloud storage is used. Images are processed in memory and served back to you directly. Nothing is shared or made public.</p>
+                </div>
+                <div class="privacy-item">
+                    <h4>No Signup Required</h4>
+                    <p>No accounts, no tracking, no cookies. Just upload, enhance, and download.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Stack -->
+        <section class="card info-card">
+            <h2>Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-group">
+                    <h4>Backend</h4>
+                    <div class="tag-grid">
+                        <span class="tag">Python 3.x</span>
+                        <span class="tag">FastAPI</span>
+                        <span class="tag">Gunicorn</span>
+                        <span class="tag">Uvicorn</span>
+                    </div>
+                </div>
+                <div class="tech-group">
+                    <h4>AI / Image</h4>
+                    <div class="tag-grid">
+                        <span class="tag tag-ai">PyTorch</span>
+                        <span class="tag tag-ai">Real-ESRGAN</span>
+                        <span class="tag tag-ai">OpenCV</span>
+                        <span class="tag tag-ai">Pillow</span>
+                        <span class="tag tag-ai">NumPy</span>
+                    </div>
+                </div>
+                <div class="tech-group">
+                    <h4>Hosting</h4>
+                    <div class="tag-grid">
+                        <span class="tag">Render</span>
+                        <span class="tag">Docker</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture -->
+        <section class="card info-card">
+            <h2>Architecture</h2>
+            <pre class="arch-diagram">
+Browser ──► FastAPI ──► Image Analysis (OpenCV)
+                    │
+                    ▼
+          Real-ESRGAN Inference (PyTorch CPU)
+                    │
+                    ▼
+            Local Disk (temporary)
+                    │
+                    ▼
+                 Download</pre>
+        </section>
+
+        <!-- Resources -->
+        <section class="card info-card">
+            <h2>Resources</h2>
+            <div class="resources-grid">
+                <a href="https://github.com/xinntao/Real-ESRGAN" target="_blank" rel="noopener" class="resource-link">
+                    <h4>Real-ESRGAN</h4>
+                    <p>Open-source super-resolution model</p>
+                </a>
+                <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener" class="resource-link">
+                    <h4>FastAPI</h4>
+                    <p>Python web framework docs</p>
+                </a>
+                <a href="https://render.com/docs" target="_blank" rel="noopener" class="resource-link">
+                    <h4>Render</h4>
+                    <p>Hosting platform deployment docs</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Creator -->
+        <section class="card info-card creator-card">
+            <div class="creator-info">
+                <p class="creator-name">Aveek Patel</p>
+                <p class="creator-role">AWS Certified Solutions Architect &amp; Developer | Cloud &amp; Systems Engineer</p>
+                <div class="creator-certs">
+                    <span class="cert-badge">AWS CCP</span>
+                    <span class="cert-badge">AWS SAA</span>
+                    <span class="cert-badge">AWS DVA</span>
+                    <span class="cert-badge">AWS AI Practitioner</span>
+                </div>
+                <div class="creator-links">
+                    <a href="https://github.com/Aveek29" target="_blank" rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                    <a href="https://aveekcloud-tech.vercel.app/" target="_blank" rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        Portfolio
+                    </a>
+                    <a href="https://linkedin.com/in/aveek-patel-473996327" target="_blank" rel="noopener">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        LinkedIn
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Optic Pixel v1.0.0 &mdash; Dynamic AI Image Enhancement Platform</p>
+            <p class="footer-sub">Real-ESRGAN inference &bull; PyTorch CPU engine &bull; Tiled super-resolution &bull; Temporary local storage</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
