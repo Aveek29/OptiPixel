@@ -128,7 +128,7 @@ CSS = """
 .arch {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); background: var(--surface-2);
     padding: 14px; border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; line-height: 1.6;
-    white-space: pre; text-align: center;
+    white-space: pre; display: table; margin: 0 auto; text-align: left;
 }
 
 .resource-link {
