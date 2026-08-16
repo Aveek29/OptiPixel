@@ -20,7 +20,7 @@ st.set_page_config(
     page_title="Optic Pixel",
     page_icon="✨",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 PROFILE_LABELS = {
@@ -28,6 +28,123 @@ PROFILE_LABELS = {
     EnhancementProfile.RESTORE: "🩹 Restore (denoise + upscale)",
     EnhancementProfile.LIGHT: "💡 Light (contrast + sharpen)",
 }
+
+CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-2: #1a1a26;
+    --border: #2a2a3a;
+    --text: #e0e0e8;
+    --text-dim: #888898;
+    --accent: #4a9eff;
+    --accent-dim: #2a6ecc;
+    --success: #34d399;
+    --ai: #a78bfa;
+}
+
+.stApp {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stToolbar"] { visibility: hidden; }
+[data-testid="stDecoration"] { display: none; }
+#MainMenu, footer { visibility: hidden; }
+
+.block-container { max-width: 860px; padding-top: 2rem; padding-bottom: 4rem; }
+
+.hero { text-align: center; padding: 30px 0 22px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+.hero-badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; }
+.badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 3px 12px;
+    border-radius: 20px; border: 1px solid var(--border); color: var(--text-dim); background: var(--surface);
+}
+.badge.green { border-color: rgba(52,211,153,0.3); color: var(--success); }
+.hero h1 {
+    font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700;
+    letter-spacing: 10px; color: var(--accent); margin: 0;
+}
+.hero .tagline { font-size: 15px; font-weight: 500; margin-top: 10px; color: var(--text); }
+.hero .sub { font-size: 12px; color: var(--text-dim); margin-top: 5px; font-family: 'JetBrains Mono', monospace; }
+
+.card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 22px 24px; margin-bottom: 16px;
+}
+.card h2 { font-size: 18px; font-weight: 600; margin: 0 0 14px; color: var(--text); }
+.card p, .card li { color: var(--text-dim); font-size: 13.5px; line-height: 1.6; }
+.card ul { margin: 0; padding-left: 18px; }
+.card b { color: var(--text); }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; padding: 4px 10px;
+    background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-dim);
+}
+.chip.ai { color: var(--ai); border-color: rgba(167,139,250,0.35); }
+
+.step-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.step-item .num { font-family: 'JetBrains Mono', monospace; font-size: 20px; color: var(--accent); font-weight: 700; }
+.step-item h4 { margin: 4px 0 4px; font-size: 13px; color: var(--text); }
+.step-item p { font-size: 12px; color: var(--text-dim); margin: 0; line-height: 1.5; }
+
+.arch { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); line-height: 1.7; white-space: pre; }
+
+/* Upload area */
+[data-testid="stFileUploader"] section {
+    border: 2px dashed var(--border) !important; border-radius: 10px !important;
+    background: var(--surface) !important; padding: 30px 20px !important; text-align: center;
+}
+[data-testid="stFileUploader"] section:hover { border-color: var(--accent) !important; }
+[data-testid="stFileUploader"] button {
+    background: var(--surface-2) !important; color: var(--text) !important;
+    border: 1px solid var(--border) !important; border-radius: 8px !important;
+}
+[data-testid="stFileUploader"] small { color: var(--text-dim) !important; }
+
+/* Buttons */
+.stButton > button, .stDownloadButton > button {
+    background: var(--accent) !important; color: #fff !important;
+    border: none !important; border-radius: 8px !important;
+    font-weight: 500 !important; padding: 11px 24px !important;
+}
+.stButton > button:hover, .stDownloadButton > button:hover { background: var(--accent-dim) !important; }
+
+/* Metrics */
+[data-testid="stMetric"] {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px;
+}
+[data-testid="stMetricLabel"] { color: var(--text-dim) !important; font-size: 12px !important; }
+[data-testid="stMetricValue"] { color: var(--text) !important; font-family: 'JetBrains Mono', monospace; }
+
+/* Status / success */
+[data-testid="stStatusWidget"] { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+[data-testid="stAlert"] { border-radius: 8px; }
+.stSuccess, .stInfo { background: var(--surface) !important; border-color: var(--border) !important; }
+
+/* Headers & text */
+h1, h2, h3 { font-family: 'Inter', sans-serif; color: var(--text); }
+[data-testid="stMarkdownContainer"] p, [data-testid="stMarkdownContainer"] li { color: var(--text-dim); }
+[data-testid="stMarkdownContainer"] strong { color: var(--text); }
+.stCaption, [data-testid="stCaptionContainer"] p { color: var(--text-dim) !important; }
+
+/* Radio */
+[data-testid="stRadio"] label { color: var(--text) !important; }
+[data-testid="stRadio"] div[role="radiogroup"] > label {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; margin: 4px;
+}
+[data-testid="stRadio"] div[role="radiogroup"] > label:has(input:checked) {
+    border-color: var(--accent); background: rgba(74,158,255,0.08);
+}
+</style>
+"""
 
 
 @st.cache_resource(show_spinner=False)
@@ -62,7 +179,7 @@ def _run_enhancement(input_path: str, output_path: str, profile: EnhancementProf
     analysis = analyze_image(input_path)
 
     with st.status("Preparing AI model…", expanded=True) as status:
-        model = _get_model()
+        _get_model()
         status.update(label="Model ready", state="complete")
 
     with st.status(f"Enhancing ({_profile_label(profile)})…", expanded=True) as status:
@@ -79,124 +196,165 @@ def _run_enhancement(input_path: str, output_path: str, profile: EnhancementProf
     return analysis, w, h, scale, elapsed
 
 
-def _render_header():
-    top = st.columns([1, 3, 1])
-    top[2].markdown(
-        "`v1.0.0` `CPU Mode`",
+def _render_hero():
+    st.markdown(
+        f"""
+        <div class="hero">
+            <div class="hero-badges">
+                <span class="badge">v1.0.0</span>
+                <span class="badge green">CPU Mode</span>
+            </div>
+            <h1>OPTIC PIXEL</h1>
+            <p class="tagline">Dynamic AI Image Enhancement Platform</p>
+            <p class="sub">Upload. Analyze. Enhance. Download. Files are temporary and removed on restart.</p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
-    st.markdown("## ✨ OPTIC PIXEL")
-    st.markdown("**Dynamic AI Image Enhancement Platform**")
-    st.caption("Upload. Analyze. Enhance. Download. Files are temporary and removed on restart.")
+
+
+def _render_card(html: str):
+    st.markdown(f'<div class="card">{html}</div>', unsafe_allow_html=True)
 
 
 def _render_how_it_works():
-    st.subheader("How It Works")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.markdown("**1 · Upload**\n\nDrag & drop a JPG, PNG, WebP, BMP, TIFF, or GIF. Max 10MB / 4 megapixels.")
-    c2.markdown("**2 · Analyze**\n\nOpenCV reads sharpness, brightness, contrast, and resolution. The system picks the best profile automatically.")
-    c3.markdown("**3 · Enhance**\n\nReal-ESRGAN AI runs tiled super-resolution on CPU. 2x upscale with detail reconstruction.")
-    c4.markdown("**4 · Download**\n\nGet your enhanced image instantly. Files are temporary and cleared on restart.")
+    _render_card(
+        """
+        <h2>How It Works</h2>
+        <div class="step-grid">
+            <div class="step-item"><div class="num">1</div><h4>Upload</h4><p>Drag &amp; drop a JPG, PNG, WebP, BMP, or TIFF. Max 10MB / 4 megapixels.</p></div>
+            <div class="step-item"><div class="num">2</div><h4>Analyze</h4><p>OpenCV reads sharpness, brightness, contrast, resolution. The system picks the best profile automatically.</p></div>
+            <div class="step-item"><div class="num">3</div><h4>Enhance</h4><p>Real-ESRGAN AI runs tiled super-resolution on CPU. 2x upscale with detail reconstruction.</p></div>
+            <div class="step-item"><div class="num">4</div><h4>Download</h4><p>Get your enhanced image instantly. Files are temporary and cleared on restart.</p></div>
+        </div>
+        """
+    )
 
 
 def _render_profiles():
-    st.subheader("Enhancement Profiles")
-    c1, c2, c3 = st.columns(3)
-    c1.markdown("**`LIGHT`**\n\nCLAHE contrast correction + sharpening. Same resolution. Fast (~1-2s).")
-    c2.markdown("**`SUPER_RES`**\n\nReal-ESRGAN 2x upscaling with detail reconstruction. 30s-2min on CPU.")
-    c3.markdown("**`RESTORE`**\n\nNoise reduction + Real-ESRGAN super-resolution. For noisy/low-quality input.")
+    _render_card(
+        """
+        <h2>Enhancement Profiles</h2>
+        <p><b>LIGHT</b> &mdash; CLAHE contrast correction + sharpening. Same resolution. Fast (~1-2s).</p>
+        <p><b>SUPER_RES</b> &mdash; Real-ESRGAN 2x upscaling with detail reconstruction. 30s-2min on CPU.</p>
+        <p><b>RESTORE</b> &mdash; Noise reduction + Real-ESRGAN super-resolution. For noisy/low-quality input.</p>
+        """
+    )
 
 
 def _render_performance():
-    st.subheader("Performance & Requirements")
-    c1, c2, c3, c4 = st.columns(4)
-    c1.markdown("**CPU Inference**\n\nReal-ESRGAN runs on CPU (no GPU required). Tiled processing keeps memory under 2GB.")
-    c2.markdown("**Processing Time**\n\n- LIGHT: ~1-2s\n- SUPER_RES 2x: 30s-2min\n- RESTORE: 45s-2min")
-    c3.markdown("**Limits**\n\n- Max upload: 10MB\n- Max resolution: 4MP\n- Timeout: 3 min\n- Scale: 2x (CPU)")
-    c4.markdown("**Memory**\n\n- Model: ~65MB weights\n- Inference: ~1.5GB RAM\n- Tiled: 256px tiles")
+    _render_card(
+        """
+        <h2>Performance &amp; Requirements</h2>
+        <div class="step-grid">
+            <div class="step-item"><h4>CPU Inference</h4><p>Real-ESRGAN runs on CPU (no GPU required). Tiled processing keeps memory under 2GB.</p></div>
+            <div class="step-item"><h4>Processing Time</h4><ul><li>LIGHT: ~1-2s</li><li>SUPER_RES 2x: 30s-2min</li><li>RESTORE: 45s-2min</li></ul></div>
+            <div class="step-item"><h4>Limits</h4><ul><li>Max upload: 10MB</li><li>Max resolution: 4MP</li><li>Timeout: 3 min</li><li>Scale: 2x (CPU)</li></ul></div>
+            <div class="step-item"><h4>Memory</h4><ul><li>Model: ~65MB weights</li><li>Inference: ~1.5GB RAM</li><li>Tiled: 256px tiles</li></ul></div>
+        </div>
+        """
+    )
 
 
 def _render_privacy():
-    st.subheader("Privacy & Data")
-    c1, c2, c3 = st.columns(3)
-    c1.markdown("**Temporary Storage**\n\nUploaded and enhanced images are stored temporarily on the server's local disk. Files are not persisted — removed on restart or redeploy.")
-    c2.markdown("**No Permanent Retention**\n\nNo cloud storage is used. Images are processed in memory and served back directly. Nothing is shared or made public.")
-    c3.markdown("**No Signup Required**\n\nNo accounts, no tracking, no cookies. Just upload, enhance, and download.")
+    _render_card(
+        """
+        <h2>Privacy &amp; Data</h2>
+        <div class="step-grid">
+            <div class="step-item"><h4>Temporary Storage</h4><p>Uploaded and enhanced images are stored temporarily on the server's local disk. Not persisted &mdash; removed on restart or redeploy.</p></div>
+            <div class="step-item"><h4>No Permanent Retention</h4><p>No cloud storage. Images are processed in memory and served back directly. Nothing is shared or public.</p></div>
+            <div class="step-item"><h4>No Signup Required</h4><p>No accounts, no tracking, no cookies. Just upload, enhance, and download.</p></div>
+        </div>
+        """
+    )
 
 
 def _render_tech_stack():
-    st.subheader("Technology Stack")
-    c1, c2, c3 = st.columns(3)
-    c1.markdown("**Backend**\n\n`Python 3.11` `Streamlit` `Pydantic`")
-    c2.markdown("**AI / Image**\n\n`PyTorch` `Real-ESRGAN` `OpenCV` `Pillow` `NumPy`")
-    c3.markdown("**Hosting**\n\n`Streamlit Community Cloud` (free, 2 CPU / 2.7GB RAM)")
+    _render_card(
+        """
+        <h2>Technology Stack</h2>
+        <div class="chips">
+            <span class="chip">Python 3.11</span>
+            <span class="chip">Streamlit</span>
+            <span class="chip">PyTorch</span>
+            <span class="chip ai">Real-ESRGAN</span>
+            <span class="chip">OpenCV</span>
+            <span class="chip">Pillow</span>
+            <span class="chip">NumPy</span>
+            <span class="chip">Streamlit Community Cloud</span>
+        </div>
+        """
+    )
 
 
 def _render_architecture():
-    st.subheader("Architecture")
-    st.code(
-        "Browser ──► Streamlit ──► Image Analysis (OpenCV)\n"
-        "                    │\n"
-        "                    ▼\n"
-        "          Real-ESRGAN Inference (PyTorch CPU)\n"
-        "                    │\n"
-        "                    ▼\n"
-        "            Local Disk (temporary)\n"
-        "                    │\n"
-        "                    ▼\n"
-        "                 Download",
-        language="text",
+    _render_card(
+        """
+        <h2>Architecture</h2>
+        <div class="arch">Browser ──► Streamlit ──► Image Analysis (OpenCV)
+                    │
+                    ▼
+          Real-ESRGAN Inference (PyTorch CPU)
+                    │
+                    ▼
+            Local Disk (temporary)
+                    │
+                    ▼
+                 Download</div>
+        """
     )
 
 
 def _render_resources():
-    st.subheader("Resources")
-    c1, c2 = st.columns(2)
-    c1.markdown(
-        "[**Real-ESRGAN**](https://github.com/xinntao/Real-ESRGAN) — open-source super-resolution model"
-    )
-    c2.markdown(
-        "[**Streamlit**](https://streamlit.io/) — Python app framework docs"
+    _render_card(
+        """
+        <h2>Resources</h2>
+        <p><b>Real-ESRGAN</b> &mdash; <a href="https://github.com/xinntao/Real-ESRGAN" target="_blank">open-source super-resolution model</a></p>
+        <p><b>Streamlit</b> &mdash; <a href="https://streamlit.io/" target="_blank">Python app framework</a></p>
+        """
     )
 
 
 def _render_creator():
-    st.subheader("Creator")
-    st.markdown(
-        "**Aveek Patel** — AWS Certified Solutions Architect & Developer | Cloud & Systems Engineer"
+    _render_card(
+        """
+        <h2>Creator</h2>
+        <p><b>Aveek Patel</b> &mdash; AWS Certified Solutions Architect &amp; Developer | Cloud &amp; Systems Engineer</p>
+        <div class="chips">
+            <span class="chip">AWS CCP</span>
+            <span class="chip">AWS SAA</span>
+            <span class="chip">AWS DVA</span>
+            <span class="chip">AWS AI Practitioner</span>
+        </div>
+        <p style="margin-top:12px">
+            <a href="https://github.com/Aveek29" target="_blank">GitHub</a> &nbsp;·&nbsp;
+            <a href="https://aveekcloud-tech.vercel.app/" target="_blank">Portfolio</a> &nbsp;·&nbsp;
+            <a href="https://linkedin.com/in/aveek-patel-473996327" target="_blank">LinkedIn</a>
+        </p>
+        """
     )
-    st.markdown("`AWS CCP`  `AWS SAA`  `AWS DVA`  `AWS AI Practitioner`")
-    c1, c2, c3 = st.columns(3)
-    c1.markdown("[GitHub](https://github.com/Aveek29)")
-    c2.markdown("[Portfolio](https://aveekcloud-tech.vercel.app/)")
-    c3.markdown("[LinkedIn](https://linkedin.com/in/aveek-patel-473996327)")
 
 
 def _render_footer():
-    st.divider()
-    st.caption(
-        "Optic Pixel v1.0.0 — Real-ESRGAN inference · PyTorch CPU engine · "
-        "Tiled super-resolution · Temporary local storage"
+    st.markdown(
+        '<div style="text-align:center; color:#888898; font-size:12px; font-family:JetBrains Mono,monospace; padding:18px 0 6px;">'
+        "Optic Pixel v1.0.0 &mdash; Real-ESRGAN inference &bull; PyTorch CPU engine &bull; "
+        "Tiled super-resolution &bull; Temporary local storage</div>",
+        unsafe_allow_html=True,
     )
 
 
-_render_header()
+st.markdown(CSS, unsafe_allow_html=True)
+_render_hero()
 
-with st.sidebar:
-    st.header("Upload")
-    uploaded = st.file_uploader(
-        "Choose an image",
-        type=["jpg", "jpeg", "png", "bmp", "webp", "tif", "tiff"],
-        label_visibility="collapsed",
-    )
-    st.divider()
-    st.caption(
-        f"Max upload: **{settings.max_upload_mb} MB**\n\n"
-        "Profile auto-suggested from image quality."
-    )
+uploaded = st.file_uploader(
+    "Upload an image",
+    type=["jpg", "jpeg", "png", "bmp", "webp", "tif", "tiff"],
+    help=f"Max {settings.max_upload_mb} MB · JPG, PNG, WebP, BMP, TIFF. Profile auto-suggested from image quality.",
+)
 
 if uploaded is None:
-    st.info("⬆️ Upload an image from the sidebar to get started.")
+    st.info("⬆️ Upload an image above to get started.")
 else:
     input_path = _save_upload(uploaded)
     analysis = analyze_image(input_path)
@@ -204,8 +362,7 @@ else:
     _render_analysis(analysis)
     st.divider()
 
-    col_left, col_mid, col_right = st.columns([1, 2, 1])
-    profile_choice = col_mid.radio(
+    profile_choice = st.radio(
         "Enhancement profile",
         options=list(EnhancementProfile),
         index=list(EnhancementProfile).index(analysis.profile),
@@ -240,18 +397,11 @@ else:
 
 st.divider()
 _render_how_it_works()
-st.divider()
 _render_profiles()
-st.divider()
 _render_performance()
-st.divider()
 _render_privacy()
-st.divider()
 _render_tech_stack()
-st.divider()
 _render_architecture()
-st.divider()
 _render_resources()
-st.divider()
 _render_creator()
 _render_footer()
